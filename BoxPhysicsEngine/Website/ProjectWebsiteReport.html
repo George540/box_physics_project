@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+body {
+  background: #456;
+}
+
+.title1 {
+	font-size:200%;
+	text-align:center;
+}
+
+.title3 {
+	text-align:center;
+	margin-top:70px;
+}
+
+.content {
+  max-width: 700px;
+  margin: auto;
+  background: #ffffe6;
+  padding: 10px;
+}
+
+.parag {
+	margin: 50px 50px 20px 50px;
+	font-family: TimesNewRoman;
+}
+
+.comm {
+	font-size: 80%;
+	text-align:center;
+	
+}
+
+</style>
+	<title >Rigidbody Simulation Physics Engine - by George Mavroeidis (COMP 477)</title>
+</head>
+<body>
+
+<div class="content">
+	<h1 class="title1">Rigidbody Simulation - Box Physics Engine</h1>
+	<h2 style="text-align:center">by George Mavroeidis <br> (COMP 477 Fall 2020)</h2>
+	<h3 class="title3">1. Motivation</h3>
+	<p class="parag">For the past five years, I've been developing projects using graphics engines that contain rigidbody physics. Blender, Unity, Unreal Engine 4 and others are examples of
+					established real-time engines that have such a mature and powerful feature. With just a few clicks, it is possible to replicate realistic motions of physical objects with high accuracy and modifiability.
+					In video game development, most of my projects involve some sort of mechanics principles and laws of physics that are already pre-computed with the engine, but I am able to experiment with their parameters. <br><br>
+					For example, a scene with a ball that moves in space and bounces off walls, may take a few minutes or even seconds to set up in Unity. However, the source code behind it deceives its simplicity on the surface.
+					Simulating heuristic phenomena in computer graphics is an overlooked challenge that not many computer science enthusiasts concider understanding on a deeper level. <br><br>
+					Although it is a subject that has been discussed extensively, I am interested in testing the basic features with certain variations on their properties. To simplify things, the project will focus on
+					cubes and planes. Cube to cube collisions and forces will be the main focus. Additional features such as raycasting will add some fun by allowing the user to manually apply forces on the cubes. <br><br>
+					An example that inspired me for this project, was a Unity tutorial, where plastic cups are stacked up like a pyramid, and the user pushes them, resulting to a crumbling set of cups. I was inspired to attempt creating similar interactions between the cubes in my program.
+	</p>
+
+	<center>
+	<img src="images/img1.png" alt="Motivation for project" style="width:600px;height:300px;" align="middle">
+	</center>
+	<p class="comm">Made in Unity by DitzelGames on Youtube</p>
+	
+	<h3 class="title3">2. Project Features</h3>
+	
+	<p class="parag">The engine contains different features that simulate object physics at ideal conditions. Although heuristic phenomena are not part of it, the basic principles are applied to give the user an introduction to the concept and open the doors for more opportunities for the engine to grow.
+					The following objectives were followed in order to complete the project:
+					<ol style="margin-left:80px">
+						<li>Create a scene with the following objects:</li>
+						<ul>
+							<li>A cubic light source</li>
+							<li>A flat terrain surface with static behavior</li>
+							<li>Several boxes with dynamic behavior</li>
+							<li>A first person remote camera that can shoot rays just like the example above</li>
+						</ul>
+						<li>The boxes will contain basic physical properties such as mass and size that affect its orientation and position in world space</li>
+						<li>The boxes will move in world space based on their linear and angular velocity that are updated every frame</li>
+						<li>The following collision Detection cases will be implemented:</li>
+						<ul>
+							<li>Cube to Cube</li>
+							<li>Ray to Cube</li>
+							<li>Plane to Cube</li>
+							<li>Sphere to Sphere - initially tested during research and development</li>
+						</ul>
+						<li>OBB Intersection will be the method used for Collision Detection between boxes</li>
+						<li>Collision Resolution will implement hard impulses that calculate the velocity in which the boxes will be bounced from their collision point</li>
+						<li>Raycasting will be an additional feature that will provide the user with manual control of applying forces to the boxes</li>
+					</ol>
+	</p>
+	<p class="parag">
+		Although some of these features are not related to the core concept of the project, they facilitate the visual representation of analyzing the results and provide a pleasing image to the user.
+		For example, lighting and texturing were important to include so the orientation and edges of the box can be determined by the light reflecting on its textured sides. Shadow mapping would be an interesting feature that could help with
+		detecting the cube to surface collision, without relying on focusing only on the cube's direction. <br><br>
+		The engine will be writen in C++ using the OpenGL graphics library due to its simplicity compared to alternative options. The chosen IDE was initially QtC Creator, but since I already had an OpenGL framework ready, 
+		I decided to migrate the project to Microsoft Visual Studio 2019.
+	</p>
+	
+	<center>
+	<img src="images/engine_screenshot.png" alt="Viewport of the Engine as seen through the camera" style="width:500px;height:300px;" align="middle">
+	</center>
+	<p class="comm">Viewport of the Box Physics Engine as seen through the camera</p>
+	
+	<h3 class="title3">3. Box Physics Engine - Behind the Code Preview</h3>
+	
+	<p class="parag">
+			The engine had a conciderable amount of complexities that must of been aware from its conceptual stages. There is more to it than just drawing a cube and making it move in space.
+			At first, the initial set-up must be done. The window, camera, renderer and manager components were set up just to get them out of the way. These were coded using standard OpenGL practices, which will not spend too much time mentioning.
+			The core of the physics engine is at the Cube. Its core attributes of this class are Orientation and Physics. Those are the attributes that will be modified by functions every frame at time dt. The World instance will contain a container of
+			all the cubes initialized in the World's constructor. In the Driver file, the user chooses the desired features to be tested. The user can choose to either test Earth's or the Moon's gravity. This
+			feature is implemented so the boxes' interactions can be seen in different accelerations. The user is also asked to choose whether to test sleep mode. This is a feature that tests cube to plane collision with
+			simulated gravity and no infinite bouncing. Then the driver loads these inputs to the World instance, implementing the right changes accordingly. If the user wants to change the inputs, the engine must be restarted. <br><br>
+			
+			Like mentioned earlier, collision detection is implemented through OBB, more specifically, mesh collision which for this case works perfectly since it's the exact shape of the box. The way it works is the world iterates through
+			all the objects and checks for any vertex penetrations between them. With a simple comparison, the exact coordinates of the points are detected. From there, the engine calculates the direction in which the objects will bounce towards.
+			Here is a simple visualization of the process.
+	</p>
+	
+	</p>
+	<center>
+	<img src="images/penetration.png" alt="Visual representation of Cube-Cube collision" style="width:540px;height:392px;" align="middle">
+	</center>
+	<p class="comm">All of cube c2's 36 vertices are iterated and passed inside cube c1's local orientation to check if penetration occurs</p>
+	
+	</p>
+	<center>
+	<img src="images/penetration_process.png" alt="Process of cube-cube collision detection" style="width:540px;height:392px;" align="middle">
+	</center>
+	<p class="comm">This is the pipeline for cube-cube collision detection. More details found on project report</p>
+	
+	<p class="parag">
+			After the collision has been detected, the impulse reaction commences. In the project documentation and source code, the details for every feature including the impulse are included. If you do not have access to the project files, contact me at gdmavroeidis@hotmail.com for permission to access everything from code to documentation and references used for the research and development.
+	</p>
+	
+	<h3 class="title3">4. Screenshot Examples of the Engine</h3>
+	
+	<center>
+	<img src="images/s1.png" alt="Overall look of the engine" style="width:540px;height:320px;" align="middle">
+	</center>
+	<p class="comm">5 cubes aligned ready to be applied with gravitational force</p>
+	
+	<center>
+	<img src="images/s2.png" alt="Sleeping State Testing with Perfect Collision!" style="width:540px;height:320px;" align="middle">
+	</center>
+	<p class="comm">Gravitational Force - Sleeping State Testing with Perfect Surface Collision!</p>
+	
+	<center>
+	<img src="images/s3.png" alt="Perfect Collision in action!" style="width:540px;height:320px;" align="middle">
+	</center>
+	<p class="comm">Perfect Collision in action caused by Raycasting!</p>
+	
+	<center>
+	<img src="images/s4.png" alt="Testing Different Sizes and Masses with Moon Gravity!" style="width:540px;height:320px;" align="middle">
+	</center>
+	<p class="comm">Testing Different Sizes and Masses with Moon Gravity!</p>
+	
+	<p class="parag">
+			As a passionate individual for computer graphics and animation, working on a project that I've been interested in trying out was plenty of fun. Although I did not get the result I was initially going for,
+			this was a perfect experience to test my abilities and knowledge of time-based phenomena in games. The engine is expected to improve and receive new features. Some features in mind are:
+			<ul style="margin-left:80px">
+							<li>Realistic Newtonian Physics with friction parameters</li>
+							<li>New Rigidbody Component, separate from the model</li>
+							<li>Improved collision handling and resolution </li>
+							<li>Full implementation of kinetic and potential energies</li>
+							<li>Different scenes like dominoes and other fun demonstrations</li>
+							<li>Debug mode vizualizer like raycast and sleeping state visibility</li>
+							<li>Convex Hull collider for any imported meshes</li>
+							<li>Object material with corresponding properties, like elasticity</li>
+							<li>UI board that lets user change parameters in real-time without the need to restart the engine</li>
+						</ul>
+	</p>
+	
+	
+	
+
+</div>
+</body>
+</html>
