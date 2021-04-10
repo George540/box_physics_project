@@ -70,7 +70,7 @@ void Renderer::Initialize()
 	std::string shaderPathPrefix = "Shaders/";
 #else
 	//C:\Users\G\Documents\GitHub\Rigidbody_Simulation_Project\Lab_Framework\Shaders
-	std::string shaderPathPrefix = "C:/Users/G/Documents/GitHub/Rigidbody_Simulation_Project/Lab_Framework/Shaders/";
+	std::string shaderPathPrefix = "C:/Users/G/Documents/GitHub/box_physics_project/BoxPhysicsEngine/Rigidbody_Simulation_Project/Lab_Framework/Shaders/";
 #endif
 
 	sShaderProgramID.push_back(
