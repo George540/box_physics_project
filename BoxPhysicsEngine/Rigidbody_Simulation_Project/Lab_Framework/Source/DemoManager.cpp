@@ -13,14 +13,13 @@
 #include "../Include/Renderer.h"
 #include "../Include/World.h"
 #include "../Include/EventManager.h"
-#include <iostream>
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
 
 	float gravity = 0.0f;
-	bool isTestingSleeping = false;
+	bool is_testing_sleeping = false;
 	
 	// Choose gravity
 	int input = -1;
@@ -45,20 +44,20 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	if (input == 0)
-		gravity = 9.807;
+		gravity = 9.807f;
 	else
-		gravity = 1.623;
+		gravity = 1.623f;
 
 	if (input2 == 1)
-		isTestingSleeping = true;
+		is_testing_sleeping = true;
 	else
-		isTestingSleeping = false;
+		is_testing_sleeping = false;
 
 
 	EventManager::Initialize();
 	Renderer::Initialize();
 
-	World world = World(gravity, isTestingSleeping);
+	auto world = World(gravity, is_testing_sleeping);
 
 	// Main Loop
 	do
@@ -67,7 +66,7 @@ int main(int argc, char* argv[]) {
 		EventManager::Update();
 
 		// Update World
-		float dt = EventManager::GetFrameTime();
+		const float dt = EventManager::GetFrameTime();
 		world.Update(dt);
 
 		// Draw World

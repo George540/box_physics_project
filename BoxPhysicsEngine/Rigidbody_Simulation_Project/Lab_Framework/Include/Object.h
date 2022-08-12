@@ -19,6 +19,7 @@
 #pragma once
 
 #include <array>
+#include <string>
 #include <vector>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp> // include this to create transformation matrices

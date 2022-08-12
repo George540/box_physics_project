@@ -1,3 +1,1 @@
-﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (C:\Users\G\Documents\GitHub\box_physics_project\BoxPhysicsEngine\Rigidbody_Simulation_Project\Lab_Framework\VS2017\/../Build/Debug/) contains files shared from another project (Labs.vcxproj, RigidBodyPhysicsEngine.vcxproj).  This can lead to incorrect clean and rebuild behavior.
-  Renderer.cpp
-  Labs.vcxproj -> C:\Users\G\Documents\GitHub\box_physics_project\BoxPhysicsEngine\Rigidbody_Simulation_Project\Lab_Framework\VS2017\/../Bin/BoxPhysicsEngine-Debug.exe
+﻿LINK : fatal error LNK1181: cannot open input file 'FreeImage.lib'
