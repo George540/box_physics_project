@@ -3,7 +3,6 @@
 #include "../Include/Camera.h"
 #include "../Include/Object.h"
 #include "../Include/Light.h"
-#include "../Include/CollisionHelper.h"
 
 #define GLEW_STATIC 1   // This allows linking with Static Library on Windows, without DLL
 #include <GL/glew.h>    // Include GLEW - OpenGL Extension Wrangler
@@ -15,11 +14,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp> // include this to create transformation matrices
 #include <glm/gtx/transform.hpp>
-#include <glm/common.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
-#include <glm/gtc/type_ptr.hpp>
 #include <limits>
 #include <vector>
 #include <iostream>
@@ -117,8 +113,9 @@ World::World(float grav, bool isTest)
 	AddCube(new Cube(vec3(0.0f, 5.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f), vec3(1.0f, 1.0f, 1.0f), 1.0f, false, true, mBoxTexture));
 	
 
-	for (int i = 0; i < mCubes.size(); i++) {
-		mCubes.at(i)->SetGravity(gravity);
+	for (auto& mCube : mCubes)
+	{
+		mCube->SetGravity(gravity);
 	}
 
 }

@@ -9,15 +9,14 @@
 //
 // List of all references will be listed on READ.ME and Project Report
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 using namespace std;
 
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
 
 #include "../Include/Renderer.h"
 #include "../Include/EventManager.h"
@@ -70,7 +69,7 @@ void Renderer::Initialize()
 	std::string shaderPathPrefix = "Shaders/";
 #else
 	//C:\Users\G\Documents\GitHub\Rigidbody_Simulation_Project\Lab_Framework\Shaders
-	std::string shaderPathPrefix = "C:/Users/G/Documents/GitHub/box_physics_project/BoxPhysicsEngine/Rigidbody_Simulation_Project/Lab_Framework/Shaders/";
+	std::string shaderPathPrefix = "D:/GitRepositories/box_physics_project/BoxPhysicsEngine/Rigidbody_Simulation_Project/Lab_Framework/Shaders/";
 #endif
 
 	sShaderProgramID.push_back(
@@ -90,7 +89,7 @@ void Renderer::Initialize()
 void Renderer::Shutdown()
 {
 	// Shaders
-	for (vector<unsigned int>::iterator it = sShaderProgramID.begin(); it < sShaderProgramID.end(); ++it)
+	for (auto it = sShaderProgramID.begin(); it < sShaderProgramID.end(); ++it)
 	{
 		glDeleteProgram(*it);
 	}
@@ -123,8 +122,8 @@ void Renderer::EndFrame()
 GLuint Renderer::LoadShaders(std::string vertex_shader_path, std::string fragment_shader_path)
 {
 	// Create the shaders
-	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+	auto VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+	auto FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
 	// Read the Vertex Shader code from the file
 	std::string VertexShaderCode;
@@ -151,7 +150,7 @@ GLuint Renderer::LoadShaders(std::string vertex_shader_path, std::string fragmen
 		FragmentShaderStream.close();
 	}
 
-	GLint Result = GL_FALSE;
+	auto Result = GL_FALSE;
 	int InfoLogLength;
 
 	// Compile Vertex Shader
@@ -217,7 +216,7 @@ bool Renderer::PrintError()
 	}
 
 	//
-	const char* errorString = NULL;
+	const char* errorString = nullptr;
 	bool retVal = false;
 
 	switch (glGetError())
