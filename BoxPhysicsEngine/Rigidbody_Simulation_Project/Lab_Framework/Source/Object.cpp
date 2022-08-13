@@ -56,12 +56,12 @@ Cube::Cube() : mPosition(vec3(0.0f, -0.5f, 0.0f)),
 	mRadius(sqrt(mHalfWidths.x* mHalfWidths.x + mHalfWidths.y * mHalfWidths.y + mHalfWidths.z * mHalfWidths.z)),
 	mGravity(0.0f),
 	mMass(11000.0f), // set mass incredibly high so the object is labeled as static
-	mIsAsleep(true), // surface is always asleep
-	mIsBox(true), // surface is still a box
-	mLinearVelocity(vec3(0.0f, 0.0f, 0.0f)),
-	mAngularVelocity(vec3(0.0f, 0.0f, 0.0f)),
+	mLinearVelocity(vec3(0.0f, 0.0f, 0.0f)), // surface is always asleep
+	mAngularVelocity(vec3(0.0f, 0.0f, 0.0f)), // surface is still a box
+	mInvInersia(mat4(1.0f)),
+	mIsAsleep(true),
 	mKineticEnergy(2 * SLEEPEPSILON), // start with minimal kinetic energy
-	mInvInersia(mat4(1.0f)) // set a default value for inertia tensor
+	mIsBox(true) // set a default value for inertia tensor
 {
 	// Initialize VAO and VBO until we build them at the end of constructor
 	mVAO = NULL;
@@ -143,14 +143,14 @@ Cube::Cube(glm::vec3& position, glm::vec3& rotation, glm::vec3& scaling, float m
 	mPosition(position),
 	mRotation(rotation),
 	mRotationAngleInDegrees(0.0f), // initial angle set to 0 degrees
-	mAngularVelocityInDegrees(0.0f),
+	mScaling(scaling),
 	mHalfWidths(mScaling * 0.5f),
 	mRadius(sqrt(mHalfWidths.x* mHalfWidths.x + mHalfWidths.y * mHalfWidths.y + mHalfWidths.z * mHalfWidths.z)),
-	mScaling(scaling),
 	mMass(mass),
+	mAngularVelocityInDegrees(0.0f),
 	mIsAsleep(isAsleep),
-	mIsBox(isBox),
-	mTexture(texture)
+	mTexture(texture),
+	mIsBox(isBox)
 {
 	mLinearVelocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	mKineticEnergy = SLEEPEPSILON + (isAsleep * SLEEPEPSILON); // depending on the sleeping state initialized, kinetic energy is calculated, even if it's extremely small
@@ -192,7 +192,7 @@ void Cube::Draw()
 	
 	// Bind texture
 	glBindTexture(GL_TEXTURE_2D, mTexture);
-	GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "worldMatrix");
+	const GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "worldMatrix");
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &GetWorldTransformationMatrix()[0][0]);
 	glUniform3fv(mLightLocation, 1, glm::value_ptr(glm::vec3(1.0, 1.0, 1.0)));
 
@@ -216,7 +216,7 @@ void Cube::Update(float dt)
 	// Reference 2: attempted energy calculations for updating sleeping state of cube
 	// Update Kinetic Energy
 	// KE = 0.5 * mass * (lv^2) + 0.5 * Inertia * (av^2)
-	float kE = dot(mLinearVelocity, mLinearVelocity) + dot(mAngularVelocity, mAngularVelocity);
+	const float kE = dot(mLinearVelocity, mLinearVelocity) + dot(mAngularVelocity, mAngularVelocity);
 	mKineticEnergy = mix(kE, mKineticEnergy, 0.98f);
 	// Clamp kinetic energy for not getting absurd results
 	//if (mKineticEnergy > 50.0f) { mKineticEnergy = 5.0f; }
@@ -236,7 +236,7 @@ void Cube::Update(float dt)
 void Cube::UpdateWorldMatrix()
 {
 	// World Matrix Update
-	mat4 model = mat4(1.0f);
+	auto model = mat4(1.0f);
 	mWorldTransformationMatrix = translate(model, mPosition) *
 		rotate(model, radians(mRotationAngleInDegrees), mRotation) *
 		scale(model, mScaling);
@@ -272,18 +272,18 @@ void Cube::CalculateInverseInertia()
 {
 	vec3 size = mHalfWidths * 2.0f;
 
-	float x2 = (size.x * size.x);
-	float y2 = (size.y * size.y);
-	float z2 = (size.z * size.z);
-	float ix = (y2 + z2) * mMass / 12.0f;
-	float iy = (x2 + z2) * mMass / 12.0f;
-	float iz = (x2 + y2) * mMass / 12.0f;
+	auto x2 = (size.x * size.x);
+	auto y2 = (size.y * size.y);
+	auto z2 = (size.z * size.z);
+	auto ix = (y2 + z2) * mMass / 12.0f;
+	auto iy = (x2 + z2) * mMass / 12.0f;
+	auto iz = (x2 + y2) * mMass / 12.0f;
 
 
-	mat4 inertiaTensor(ix, 0, 0, 0,
-		0, iy, 0, 0,
-		0, 0, iz, 0,
-		0, 0, 0, 1);
+	const mat4 inertiaTensor(ix, 0, 0, 0,
+	                         0, iy, 0, 0,
+	                         0, 0, iz, 0,
+	                         0, 0, 0, 1);
 
 	mInvInersia = inverse(inertiaTensor);
 }
@@ -320,8 +320,8 @@ void Cube::AddCollisionImpulse(Cube& c0, Cube& c1, vec3& hitPoint, vec3 normal, 
 	// Some simple check code.
 	if (dt <= 0.0) { return; }
 
-	float invMass0 = (c0.GetMass() > 1000.0f) ? 0.0f : (1.0f / c0.GetMass());
-	float invMass1 = (c1.GetMass() > 1000.0f) ? 0.0f : (1.0f / c1.GetMass());
+	auto invMass0 = (c0.GetMass() > 1000.0f) ? 0.0f : (1.0f / c0.GetMass());
+	auto invMass1 = (c1.GetMass() > 1000.0f) ? 0.0f : (1.0f / c1.GetMass());
 
 	invMass0 = (c0.IsAsleep()) ? 0.0f : invMass0;
 	invMass1 = (c1.IsAsleep()) ? 0.0f : invMass1;
@@ -345,8 +345,8 @@ void Cube::AddCollisionImpulse(Cube& c0, Cube& c1, vec3& hitPoint, vec3 normal, 
 	float vn = dot(dv, normal);
 
 	// Works out the bias to prevent Prevents sinking!
-	const float allowedPenetration = 0.1f;
-	const float biasFactor = 0.1f; // 0.1 to 0.3
+	const auto allowedPenetration = 0.1f;
+	const auto biasFactor = 0.1f; // 0.1 to 0.3
 	bool g_positionCorrection = true;
 	float biasFactorValue = g_positionCorrection ? biasFactor : 0.0f;
 
@@ -385,7 +385,7 @@ void Cube::AddCollisionImpulse(Cube& c0, Cube& c1, vec3& hitPoint, vec3 normal, 
 	{
 		// Work out our tangent vector, with is perpendicular
 		// to our collision normal
-		vec3 tangent = vec3(0.0f, 0.0f, 0.0f);
+		auto tangent = vec3(0.0f, 0.0f, 0.0f);
 		tangent = dv - (dot(dv, normal) * normal);
 		tangent = normalize(tangent);
 
@@ -527,9 +527,9 @@ float Cube::IntersectsRay(glm::vec3 source, glm::vec3 direction)
 
 				//Projection onto a plane, we must pick a plane not perpendicular to triangle, to avoid collapsing the triangle into a single line
 				//At least one of these is guaranteed to be non-perpendicular. All are centered at the origin
-				glm::vec3 xNormal = glm::vec3(1, 0, 0);
-				glm::vec3 yNormal = glm::vec3(0, 1, 0);
-				glm::vec3 zNormal = glm::vec3(0, 0, 1);
+				auto xNormal = glm::vec3(1, 0, 0);
+				auto yNormal = glm::vec3(0, 1, 0);
+				auto zNormal = glm::vec3(0, 0, 1);
 
 				glm::vec2 a;
 				glm::vec2 b;

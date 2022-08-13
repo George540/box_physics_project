@@ -68,7 +68,7 @@ void Light::Draw()
 void Light::BuildVertexBuffer()
 {
 	//cube model
-	float vertices[] = {
+	const float vertices[] = {
 		-0.5f, -0.5f, -0.5f,
 		 0.5f, -0.5f, -0.5f,
 		 0.5f,  0.5f, -0.5f,

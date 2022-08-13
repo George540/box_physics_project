@@ -17,9 +17,8 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-
-	float gravity = 0.0f;
-	bool is_testing_sleeping = false;
+	auto gravity = 0.0f;
+	auto is_testing_sleeping = false;
 	
 	// Choose gravity
 	int input = -1;

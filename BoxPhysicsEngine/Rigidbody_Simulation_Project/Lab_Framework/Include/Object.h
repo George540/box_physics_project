@@ -48,25 +48,25 @@ private:
 	glm::vec3 mHalfWidths;									//positive halfwidths along each axis
 	float mRadius;											// half of the box's diagonal:
 															//length= sqrt( mHalfWidths.x*mHalfWidths.x + mHalfWidths.y*mHalfWidths.y + mHalfWidths.z*mHalfWidths.z ) - original used for collision detection
-	glm::mat4 mWorldTransformationMatrix;					// World transformation Matrix of object (used for updating orientation and vertex shader work)
+	glm::mat4 mWorldTransformationMatrix{};					// World transformation Matrix of object (used for updating orientation and vertex shader work)
 
 	// PHYSICS:
 	float mGravity;											// gravity value passed by the World instance
 	float mMass;											// mass of object in kg, remains constant (mostly assumed to be 1kg)
 	glm::vec3 mLinearVelocity;								// Linear velocity of object (relates to mPosition)
 	glm::vec3 mAngularVelocity;								// angular velocity axis of object  (relates to mRotation)
-	float mAngularVelocityInDegrees;						// mangnitude of rotational speed of object (relates to mRotationAngleInDegrees)
+	float mAngularVelocityInDegrees{};						// mangnitude of rotational speed of object (relates to mRotationAngleInDegrees)
 	glm::mat4 mInvInersia;									// matrix inverse of the inerta tensor calculated at the Box's constructor
 
 	//MISCELLANEOUS
 	float mIsAsleep;										// is the box in a stationary state? used to stop the object from moving during unecessary collisions
 	float mKineticEnergy;									// box's kinetic energy - initially used to calculate the sleeping state of the box
 	GLuint mLightLocation;									// used for the shader's light reflection on box's surface
-	GLuint mTexture;										// texture loaded form World Instance
+	GLuint mTexture{};										// texture loaded form World Instance
 	bool mIsBox;											// is this object a moving box or a stationary surface?
 	GLuint mVAO;											// Vertex Array Object
 	GLuint mVBO;											// Vertex Buffer Object
-	GLuint mNumOfVertices;									// Number of vertices of the object
+	GLuint mNumOfVertices{};									// Number of vertices of the object
 															// (a box's vertices are 36, but since the program was also tested in spheres, the OBJLoader could calculate the number of vertices)
 	std::vector<glm::vec3> mVertexPositions;				// here the object's 
 

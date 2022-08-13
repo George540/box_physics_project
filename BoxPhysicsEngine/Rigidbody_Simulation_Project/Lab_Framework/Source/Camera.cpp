@@ -24,11 +24,11 @@ using namespace glm;
 	Camera's Constructor: Camera is initialized in the world scene
 */
 Camera::Camera(glm::vec3 position, glm::vec3 lookAtPoint, glm::vec3 upVector) : 
-	mPosition(position), 
+	mPosition(position),
+	mHorizontalAngle(90.0f),
+	mVerticalAngle(-30.0f),
 	mLookAt(lookAtPoint),
 	mUpVector(upVector),
-	mHorizontalAngle(90.0f), 
-	mVerticalAngle(-30.0f),
 	mSpeed(10.0f),
 	mAngularSpeed(15.0f)
 {
@@ -65,12 +65,12 @@ void Camera::Update(float dt)
 		mHorizontalAngle += 360;
 	}
 
-	float theta = radians(mHorizontalAngle);
-	float phi = radians(mVerticalAngle);
+	auto theta = radians(mHorizontalAngle);
+	auto phi = radians(mVerticalAngle);
 
 	mLookAt = vec3(cosf(phi) * cosf(theta), sinf(phi), -cosf(phi) * sinf(theta));
 
-	vec3 sideVector = glm::cross(mLookAt, mUpVector);
+	auto sideVector = glm::cross(mLookAt, mUpVector);
 	glm::normalize(sideVector);
 
 	// A S D W for motion along the camera basis vectors
